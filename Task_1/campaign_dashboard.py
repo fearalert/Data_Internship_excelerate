@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import os
 
 # --- Page Configuration ---
 st.set_page_config(page_title="Campaign Performance Analyzer", layout="wide")
@@ -8,7 +9,7 @@ st.set_page_config(page_title="Campaign Performance Analyzer", layout="wide")
 # --- Load Data ---
 @st.cache_data
 def load_data():
-    df = pd.read_csv("data.csv")
+    df = pd.read_csv(os.path.join(os.path.dirname(__file__), "data.csv"))
     
     # Change "Amount Spent in INR" to "Amount Spent" since we're displaying it as a generic currency
     df = df.rename(columns={"Amount Spent in INR": "Amount Spent"})
@@ -36,7 +37,7 @@ try:
     
     # --- Sidebar Filters ---
     st.sidebar.header("🔍 Filter Options")
-    campaign_ids = sorted(df['Campaign ID'].unique())
+    campaign_ids = sorted(df['campaign ID'].unique())
     selected_campaigns = st.sidebar.multiselect("Campaign", campaign_ids, default=campaign_ids)
     
     audiences = sorted(df['Audience'].unique())
@@ -48,7 +49,7 @@ try:
     geos = st.sidebar.multiselect("Geography", df['Geography'].unique(), default=df['Geography'].unique())
 
     # Filter data based on selections
-    filtered_df = df[(df['Campaign ID'].isin(selected_campaigns)) & 
+    filtered_df = df[(df['campaign ID'].isin(selected_campaigns)) & 
                      (df['Audience'].isin(selected_audiences)) & 
                      (df['Age'].isin(selected_age_groups)) &
                      (df['Geography'].isin(geos))]    
@@ -424,6 +425,7 @@ try:
     
     # Rename columns for clarity
     summary_table = summary_table.rename(columns={
+        'Campaign Name': 'Campaign',
         'Click-Through Rate (CTR in %)': 'CTR (%)',
         'Cost Per Click (CPC)': 'CPC ($)',
         'Cost per Result (CPR)': 'CPR ($)',
