@@ -5,10 +5,9 @@ from io import BytesIO
 import base64
 import pycountry
 
-# --- Load Data ---
 @st.cache_data
 def load_data():
-    df = pd.read_csv("dataset/data.csv")  # replace with your file
+    df = pd.read_csv("data.csv")
     df = df.loc[:, ~df.columns.str.contains('@|^Unnamed')]
     df['Amount Spent in INR'] = df['Amount Spent in INR'].replace('[\$,]', '', regex=True).astype(float)
     df['Cost Per Click (CPC)'] = df['Cost Per Click (CPC)'].replace('[\$,]', '', regex=True).astype(float)

@@ -1,9 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
-from io import BytesIO
-import base64
 
 # --- Page Configuration ---
 st.set_page_config(page_title="Campaign Performance Analyzer", layout="wide")
@@ -11,9 +8,8 @@ st.set_page_config(page_title="Campaign Performance Analyzer", layout="wide")
 # --- Load Data ---
 @st.cache_data
 def load_data():
-    df = pd.read_csv("dataset/data.csv")
+    df = pd.read_csv("data.csv")
     
-    # Fix naming inconsistencies - standardize to currency without $ symbol
     # Change "Amount Spent in INR" to "Amount Spent" since we're displaying it as a generic currency
     df = df.rename(columns={"Amount Spent in INR": "Amount Spent"})
     
@@ -51,7 +47,6 @@ try:
 
     geos = st.sidebar.multiselect("Geography", df['Geography'].unique(), default=df['Geography'].unique())
 
-    
     # Filter data based on selections
     filtered_df = df[(df['Campaign ID'].isin(selected_campaigns)) & 
                      (df['Audience'].isin(selected_audiences)) & 
@@ -455,6 +450,5 @@ try:
 except Exception as e:
     st.error(f"An error occurred: {e}")
     st.write("Please ensure the data file is in the correct format and located in the same directory as this script.")
-    # Display more debugging information
     if 'df' in locals():
         st.write("Available columns:", df.columns.tolist())
