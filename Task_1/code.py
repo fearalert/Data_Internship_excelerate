@@ -19,12 +19,12 @@ df = load_data()
 
 # --- Sidebar Filters ---
 st.sidebar.header("🔍 Filter")
-campaigns = st.sidebar.multiselect("Campaign ID", df['Campaign ID'].unique(), default=df['Campaign ID'].unique())
+campaigns = st.sidebar.multiselect("campaign ID", df['campaign ID'].unique(), default=df['campaign ID'].unique())
 geos = st.sidebar.multiselect("Geography", df['Geography'].unique(), default=df['Geography'].unique())
 ages = st.sidebar.multiselect("Age Group", df['Age'].unique(), default=df['Age'].unique())
 
 filtered = df[
-    df['Campaign ID'].isin(campaigns) &
+    df['campaign ID'].isin(campaigns) &
     df['Geography'].isin(geos) &
     df['Age'].isin(ages)
 ]
@@ -40,6 +40,13 @@ col1, col2, col3 = st.columns(3)
 col1.metric("💰 Total Spent", f"₹{total_spent:,.0f}")
 col2.metric("📈 Avg CTR", f"{avg_ctr:.2f}%")
 col3.metric("🪙 Avg CPC", f"₹{avg_cpc:.2f}")
+
+# --- CPC by Age Group ---
+st.subheader("CPC by Age Group")
+ctr_data = filtered.groupby('Age')["Cost Per Click (CPC)"].mean().reset_index()
+fig_ctr_age = px.bar(ctr_data, x='Age', y='Cost Per Click (CPC)', color='Age',
+                     title="CPC by Age Group", labels={'Cost Per Click (CPC)': 'CPC'})
+st.plotly_chart(fig_ctr_age, use_container_width=True)
 
 # --- CTR by Age Group ---
 st.subheader("CTR by Age Group")

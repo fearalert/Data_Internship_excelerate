@@ -166,6 +166,7 @@ try:
         size='Amount Spent',
         color='ROI Score',
         hover_name='Campaign Name',
+        text='Campaign Name',
         color_continuous_scale='RdYlGn',
         title='Performance vs Cost (Bubble Size = Total Spend)',
         labels={'Click-Through Rate (CTR in %)': 'CTR (%)', 'Cost per Result (CPR)': 'CPR ($)'}
