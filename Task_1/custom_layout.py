@@ -8,6 +8,9 @@ def apply_custom_layout(fig, xaxis_label="X Axis", yaxis_label="Y Axis"):
             title_font=dict(color="black", family="Courier New", size=14),
             tickfont=dict(color="black", family="Courier New", size=12),
         ),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, 
+                    font=dict(color="black", family="Courier New"),
+                    title_font=dict(color="black", family="Courier New")),
         xaxis_title=f"<b>{xaxis_label}</b>",
         yaxis_title=f"<b>{yaxis_label}</b>",
         xaxis=dict(

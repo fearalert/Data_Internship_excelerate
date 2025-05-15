@@ -44,6 +44,7 @@ def additional_visualizations(filtered: pd.DataFrame):
     clicks_imps = filtered.groupby("campaign ID")[["Clicks", "Impressions"]].sum().reset_index()
     fig_clicks_imps = px.bar(clicks_imps, x="campaign ID", y=["Clicks", "Impressions"],
                             title="Clicks and Impressions", barmode='group')
+    fig_clicks_imps.update_traces(texttemplate='%{y:.2f}%', textposition='top center')
     apply_custom_layout(fig_clicks_imps, xaxis_label="Campaign ID", yaxis_label="Count")
     st.plotly_chart(fig_clicks_imps, use_container_width=True)
 
