@@ -85,7 +85,7 @@ try:
     st.subheader("Campaign Efficiency Score (CTR / CPR)")
     
     # Aggregate by campaign
-    campaign_efficiency = filtered_df.groupby('Campaign Name').agg({
+    campaign_efficiency = filtered_df.groupby('campaign ID').agg({
         'Click-Through Rate (CTR in %)': 'mean',
         'Cost Per Click (CPC)': 'mean',
         'Cost per Result (CPR)': 'mean',
@@ -104,7 +104,7 @@ try:
     # Create bar chart for efficiency
     fig_efficiency = px.bar(
         campaign_efficiency,
-        x='Campaign Name', 
+        x='campaign ID', 
         y='Efficiency Score',
         color='Efficiency Score',
         color_continuous_scale='RdYlGn',  # Red (bad) to Yellow to Green (good)
@@ -118,7 +118,7 @@ try:
     
     fig_roi = px.bar(
         campaign_efficiency.sort_values('ROI Score'),
-        x='Campaign Name', 
+        x='campaign ID', 
         y='ROI Score',
         color='ROI Score',
         color_continuous_scale='RdYlGn',  # Red (bad) to Yellow to Green (good)
@@ -134,7 +134,7 @@ try:
         st.subheader("Cost per Click (CPC) Analysis")
         fig_cpc = px.bar(
             campaign_efficiency.sort_values('Cost Per Click (CPC)', ascending=False),
-            x='Campaign Name', 
+            x='campaign ID', 
             y='Cost Per Click (CPC)',
             color='Cost Per Click (CPC)',
             color_continuous_scale='RdYlGn_r',  # Green (good) to Red (bad)
@@ -147,7 +147,7 @@ try:
         st.subheader("Cost per Result (CPR) Analysis")
         fig_cpr = px.bar(
             campaign_efficiency.sort_values('Cost per Result (CPR)', ascending=False),
-            x='Campaign Name', 
+            x='campaign ID', 
             y='Cost per Result (CPR)',
             color='Cost per Result (CPR)',
             color_continuous_scale='RdYlGn_r',  # Green (good) to Red (bad)
@@ -165,8 +165,8 @@ try:
         y='Cost per Result (CPR)',
         size='Amount Spent',
         color='ROI Score',
-        hover_name='Campaign Name',
-        text='Campaign Name',
+        hover_name='campaign ID',
+        text='campaign ID',
         color_continuous_scale='RdYlGn',
         title='Performance vs Cost (Bubble Size = Total Spend)',
         labels={'Click-Through Rate (CTR in %)': 'CTR (%)', 'Cost per Result (CPR)': 'CPR ($)'}
@@ -223,7 +223,7 @@ try:
     # Get the worst performing campaign
     worst_campaign = campaign_efficiency.sort_values('Composite Score').iloc[0]
     
-    st.subheader(f"Recommended Campaign to Discontinue: {worst_campaign['Campaign Name']}")
+    st.subheader(f"Recommended Campaign to Discontinue: {worst_campaign['campaign ID']}")
     
     # Create a metrics explanation card
     col1, col2 = st.columns(2)
@@ -257,9 +257,9 @@ try:
     st.header("📈 Detailed Campaign Analysis")
     
     # Select a campaign for detailed analysis
-    selected_campaign = st.selectbox("Select Campaign for Detailed Analysis", df['Campaign Name'].unique())
+    selected_campaign = st.selectbox("Select Campaign for Detailed Analysis", df['campaign ID'].unique())
     
-    campaign_data = df[df['Campaign Name'] == selected_campaign]
+    campaign_data = df[df['campaign ID'] == selected_campaign]
     
     # Display campaign details
     st.subheader(f"Details for {selected_campaign}")
@@ -339,7 +339,7 @@ try:
     st.header("🔍 Campaign Comparative Analysis")
     
     # Get campaign options for comparison
-    campaign_options = df['Campaign Name'].unique()
+    campaign_options = df['campaign ID'].unique()
     
     col1, col2 = st.columns(2)
     with col1:
@@ -347,8 +347,8 @@ try:
     with col2:
         campaign2 = st.selectbox("Select Second Campaign", campaign_options, index=min(1, len(campaign_options)-1))
     
-    campaign1_data = df[df['Campaign Name'] == campaign1]
-    campaign2_data = df[df['Campaign Name'] == campaign2]
+    campaign1_data = df[df['campaign ID'] == campaign1]
+    campaign2_data = df[df['campaign ID'] == campaign2]
     
     # Calculate aggregates for comparison
     campaign1_agg = campaign1_data.agg({
@@ -420,13 +420,13 @@ try:
     
     # Create a summary table
     summary_table = campaign_efficiency.sort_values('Composite Score')[
-        ['Campaign Name', 'Click-Through Rate (CTR in %)', 'Cost Per Click (CPC)', 'Cost per Result (CPR)', 
+        ['campaign ID', 'Click-Through Rate (CTR in %)', 'Cost Per Click (CPC)', 'Cost per Result (CPR)', 
          'ROI Score', 'Efficiency Score', 'Amount Spent', 'Composite Score']
     ]
     
     # Rename columns for clarity
     summary_table = summary_table.rename(columns={
-        'Campaign Name': 'Campaign',
+        'campaign ID': 'Campaign',
         'Click-Through Rate (CTR in %)': 'CTR (%)',
         'Cost Per Click (CPC)': 'CPC ($)',
         'Cost per Result (CPR)': 'CPR ($)',
