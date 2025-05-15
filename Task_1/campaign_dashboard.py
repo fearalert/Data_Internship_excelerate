@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+
+from visualizations_additional import additional_visualizations
 from load_data import load_data
 from custom_layout import apply_custom_layout
 
@@ -56,7 +58,7 @@ try:
     with col4:
         avg_cpm = filtered_df['CPM'].mean()
         st.metric("Average CPM", f"${avg_cpm:.2f}")
-    
+        
     # --- Campaign Performance Analysis ---
     st.header("🔍 Campaign Performance Analysis")
     
@@ -272,7 +274,7 @@ try:
             .reset_index()
         )
 
-        # Dropdown to select campaign
+    # Dropdown to select campaign
     selected_line_campaign = st.selectbox("Select Campaign for Reach & Impressions Trend", sorted(filtered_df['campaign ID'].unique()))
     line_data = reach_impressions_df[reach_impressions_df['campaign ID'] == selected_line_campaign]
 
@@ -374,7 +376,6 @@ try:
 
     apply_custom_layout(fig_clicks, xaxis_label="Audience Group", yaxis_label="Clicks")
     st.plotly_chart(fig_clicks, use_container_width=True)
-
 
             
     # --- Detailed Campaign Analysis ---
@@ -657,6 +658,12 @@ try:
     )
     apply_custom_layout(fig_perf, xaxis_label="Performance Score", yaxis_label="Campaign ID")
     st.plotly_chart(fig_perf, use_container_width=True)
+
+    # Basic_additional_visuals
+    st.subheader("📊 Additional Visualizations")
+    st.write("Explore additional visualizations to gain deeper insights into campaign performance.")
+    
+    additional_visualizations(filtered_df)
  
     st.markdown("---")
     st.caption("Campaign Analysis Tool - Prioritize campaigns with higher Performance Scores")
