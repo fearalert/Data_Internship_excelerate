@@ -1,33 +1,12 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import os
+from load_data import load_data
+from custom_layout import apply_custom_layout
 
 # --- Page Configuration ---
 st.set_page_config(page_title="Campaign Performance Analyzer", layout="wide")
 
-# --- Load Data ---
-@st.cache_data
-def load_data():
-    df = pd.read_csv(os.path.join(os.path.dirname(__file__), "data.csv"))
-    
-    # Change "Amount Spent in INR" to "Amount Spent" since we're displaying it as a generic currency
-    df = df.rename(columns={"Amount Spent in INR": "Amount Spent"})
-    
-    # Clean up currency and convert to numeric
-    df['Amount Spent'] = df['Amount Spent'].str.replace('$', '').str.replace(',', '').astype(float)
-    df['Cost Per Click (CPC)'] = df['Cost Per Click (CPC)'].str.replace('$', '').str.replace(',', '').astype(float)
-    df['Cost per Result (CPR)'] = df['Cost per Result (CPR)'].str.replace('$', '').str.replace(',', '').astype(float)
-    
-    # Calculate additional metrics
-    df['Conversion Rate'] = df['Unique Link Clicks (ULC)'] / df['Impressions'] * 100
-    df['ROI Score'] = df['Unique Link Clicks (ULC)'] / df['Amount Spent']
-    df['Efficiency Score'] = df['Click-Through Rate (CTR in %)'] / df['Cost per Result (CPR)']
-    df['CPM'] = df['Amount Spent'] / df['Impressions'] * 1000  # Renamed to simpler CPM
-    
-    return df
-
-# Load data
 try:
     df = load_data()
     
@@ -111,6 +90,10 @@ try:
         title='Campaign Efficiency Scores (CTR / CPR) - Lower is Worse',
         hover_data=['Amount Spent', 'Click-Through Rate (CTR in %)', 'Cost per Result (CPR)']
     )
+
+    # Update layout
+    apply_custom_layout(fig_efficiency, xaxis_label="campaign ID", yaxis_label="Efficiency Score")
+    
     st.plotly_chart(fig_efficiency, use_container_width=True)
     
     # --- ROI Analysis ---
@@ -125,6 +108,10 @@ try:
         title='Campaign ROI Scores (ULC / Spend) - Lower is Worse',
         hover_data=['Amount Spent', 'Unique Link Clicks (ULC)', 'Cost per Result (CPR)']
     )
+
+    # Update layout
+    apply_custom_layout(fig_roi, xaxis_label="campaign ID", yaxis_label="ROI Score")
+    
     st.plotly_chart(fig_roi, use_container_width=True)
     
     # --- Cost Analysis ---
@@ -154,6 +141,10 @@ try:
             title='Cost per Result by Campaign - Higher is Worse',
             hover_data=['Amount Spent', 'Unique Link Clicks (ULC)']
         )
+
+        # Update layout
+        apply_custom_layout(fig_cpr, xaxis_label="campaign ID", yaxis_label="Cost per Result (CPR)")
+
         st.plotly_chart(fig_cpr, use_container_width=True)
     
     # --- Performance vs Spend Analysis ---
@@ -171,6 +162,8 @@ try:
         title='Performance vs Cost (Bubble Size = Total Spend)',
         labels={'Click-Through Rate (CTR in %)': 'CTR (%)', 'Cost per Result (CPR)': 'CPR ($)'}
     )
+    apply_custom_layout(fig_bubble, xaxis_label="Click-Through Rate (CTR in %)", yaxis_label="Cost per Result (CPR)")
+
     # Add quadrant lines to identify high cost, low performance campaigns
     avg_ctr = campaign_efficiency['Click-Through Rate (CTR in %)'].mean()
     avg_cpr = campaign_efficiency['Cost per Result (CPR)'].mean()
@@ -252,7 +245,138 @@ try:
         The low composite score indicates poor performance across these key metrics,
         suggesting budget could be better allocated to higher-performing campaigns.
         """)
-    
+                
+    # --- Reach & Impressions Line Chart ---
+    st.header("📈 Reach and Impressions Analysis")
+
+        # Ensure Age groups are sorted consistently
+    all_age_groups = sorted(filtered_df['Age'].dropna().unique())
+
+    # Group and pivot for consistent age groups across campaigns
+    reach_impressions_df = (
+            filtered_df
+            .groupby(['campaign ID', 'Age'])[['Reach', 'Impressions']]
+            .sum()
+            .reset_index()
+        )
+
+    # Add missing age groups for each campaign with 0 values
+    campaign_age_grid = pd.MultiIndex.from_product(
+            [reach_impressions_df['campaign ID'].unique(), all_age_groups],
+            names=["campaign ID", "Age"]
+        )
+    reach_impressions_df = (
+            reach_impressions_df
+            .set_index(['campaign ID', 'Age'])
+            .reindex(campaign_age_grid, fill_value=0)
+            .reset_index()
+        )
+
+        # Dropdown to select campaign
+    selected_line_campaign = st.selectbox("Select Campaign for Reach & Impressions Trend", sorted(filtered_df['campaign ID'].unique()))
+    line_data = reach_impressions_df[reach_impressions_df['campaign ID'] == selected_line_campaign]
+
+    fig_line = px.line(
+            line_data,
+            x='Age',
+            y=['Reach', 'Impressions'],
+            markers=True,
+            title=f"Reach and Impressions by Age Group for Campaign ID:  {selected_line_campaign}",
+            labels={'value': 'Count', 'Age': 'Age Group', 'variable': 'Metric'}
+        )
+
+    # Emphasis: annotate highest Reach point
+    max_reach = line_data.loc[line_data['Reach'].idxmax()]
+    fig_line.add_annotation(
+            x=max_reach['Age'], y=max_reach['Reach'],
+            text=f"🔺 Max Reach: {int(max_reach['Reach']):,}",
+            showarrow=True, arrowhead=2, arrowcolor="green",
+            font=dict(color="green", size=12), bgcolor="white"
+        )
+
+    # Emphasis: annotate highest Impressions point
+    max_impressions = line_data.loc[line_data['Impressions'].idxmax()]
+    fig_line.add_annotation(
+            x=max_impressions['Age'], y=max_impressions['Impressions'],
+            text=f"🔵 Max Impressions: {int(max_impressions['Impressions']):,}",
+            showarrow=True, arrowhead=2, arrowcolor="blue",
+            font=dict(color="blue", size=12), bgcolor="white"
+    )
+
+    apply_custom_layout(fig_line, xaxis_label="Age Group", yaxis_label="Count")
+    st.plotly_chart(fig_line, use_container_width=True)
+
+    # --- Spend Distribution by Geography ---
+    st.header("🌍 Spend Distribution by Geography")
+
+    spend_geo = filtered_df.groupby('Geography')['Amount Spent'].sum().reset_index()
+
+    if len(spend_geo) <= 5:
+            fig_geo = px.pie(
+                spend_geo,
+                values='Amount Spent',
+                names='Geography',
+                title="Spend Distribution Across Geographies",
+                hole=0.4
+            )
+            fig_geo.update_traces(textposition='inside', textinfo='percent+label')
+    else:
+            fig_geo = px.bar(
+                spend_geo,
+                x='Geography',
+                y='Amount Spent',
+                title="Spend Distribution Across Geographies",
+                color='Amount Spent',
+                color_continuous_scale='Oranges',
+                labels={'Amount Spent': 'Amount ($)', 'Geography': 'Region'}
+            )
+
+    apply_custom_layout(fig_geo, xaxis_label="Geography", yaxis_label="Amount Spent")
+    st.plotly_chart(fig_geo, use_container_width=True)
+
+    # --- Spend Distribution by Geography (Map) ---
+    st.header("🗺️ Spend Distribution by Geography (Map View)")
+
+    # Aggregate spend by geography
+    spend_geo = filtered_df.groupby('Geography')['Amount Spent'].sum().reset_index()
+
+    # Choropleth map visualization
+    fig_geo_map = px.choropleth(
+        spend_geo,
+        locations='Geography',
+        locationmode='country names',
+        color='Amount Spent',
+        color_continuous_scale='Oranges',
+        title='💸 Global Spend Distribution by Country',
+        labels={'Amount Spent': 'Amount ($)', 'Geography': 'Country'},
+        hover_name='Geography'
+    )
+
+    fig_geo_map.update_geos(showframe=False, showcoastlines=False)
+    apply_custom_layout(fig_geo_map)
+    st.plotly_chart(fig_geo_map, use_container_width=True)
+
+
+    # --- Clicks by Audience ---
+    st.header("🧑‍🤝‍🧑 Clicks by Audience")
+
+    clicks_audience = filtered_df.groupby('Audience')['Clicks'].sum().reset_index()
+
+    fig_clicks = px.bar(
+            clicks_audience,
+            x='Audience',
+            y='Clicks',
+            color='Clicks',
+            color_continuous_scale='Blues',
+            title="Total Clicks by Audience Group",
+            labels={'Clicks': 'Number of Clicks', 'Audience': 'Audience Group'}
+        )
+
+    apply_custom_layout(fig_clicks, xaxis_label="Audience Group", yaxis_label="Clicks")
+    st.plotly_chart(fig_clicks, use_container_width=True)
+
+
+            
     # --- Detailed Campaign Analysis ---
     st.header("📈 Detailed Campaign Analysis")
     
@@ -286,6 +410,8 @@ try:
             color='Click-Through Rate (CTR in %)',
             title=f'CTR by Age Group for {selected_campaign}'
         )
+
+        apply_custom_layout(fig_age_ctr, xaxis_label="Age Group", yaxis_label="CTR (%)")
         st.plotly_chart(fig_age_ctr, use_container_width=True)
     
     with col2:
@@ -297,6 +423,7 @@ try:
             color_continuous_scale='RdYlGn_r',
             title=f'CPR by Age Group for {selected_campaign}'
         )
+        apply_custom_layout(fig_age_cpr, xaxis_label="Age Group", yaxis_label="Cost per Result (CPR)")
         st.plotly_chart(fig_age_cpr, use_container_width=True)
     
     # Geography analysis
@@ -322,6 +449,7 @@ try:
                 color='Click-Through Rate (CTR in %)',
                 title=f'CTR by Geography for {selected_campaign}'
             )
+            apply_custom_layout(fig_geo_ctr, xaxis_label="Geography", yaxis_label="CTR (%)")
             st.plotly_chart(fig_geo_ctr, use_container_width=True)
         
         with col2:
@@ -333,7 +461,61 @@ try:
                 color_continuous_scale='RdYlGn_r',
                 title=f'CPR by Geography for {selected_campaign}'
             )
+            apply_custom_layout(fig_geo_cpr, xaxis_label="Geography", yaxis_label="Cost per Result (CPR)")
             st.plotly_chart(fig_geo_cpr, use_container_width=True)
+    
+
+    # --- Age Distribution by Campaign ---
+    st.header("🎯 Age Distribution by Campaign")
+
+    # Select campaign for visualization
+    selected_age_campaign = st.selectbox("Select Campaign for Age Distribution", sorted(filtered_df['campaign ID'].unique()))
+
+    # Filter data
+    age_dist_df = (
+        filtered_df[filtered_df['campaign ID'] == selected_age_campaign]
+        .groupby('Age')[['Reach', 'Impressions', 'Clicks']]
+        .sum()
+        .reset_index()
+        .sort_values(by='Age')
+    )
+    # Bar chart for Reach, Impressions, Clicks
+    fig_age_dist = px.bar(
+        age_dist_df,
+        x='Age',
+        y=['Reach', 'Impressions', 'Clicks'],
+        barmode='group',
+        title=f"Distribution of Reach, Impressions & Clicks by Age for Campaign {selected_age_campaign}",
+        labels={'value': 'Count', 'Age': 'Age Group', 'variable': 'Metric'}
+    )
+
+    apply_custom_layout(fig_age_dist, xaxis_label="Age Group", yaxis_label="Count")
+    st.plotly_chart(fig_age_dist, use_container_width=True)
+
+    st.subheader("🎯 Comparision of Age Distribution by Campaign")
+    st.write("This section compares the reach of different campaigns across various age groups.")
+    # Compare multiple campaigns
+    age_compare_df = (
+        filtered_df
+        .groupby(['campaign ID', 'Age'])[['Reach']]
+        .sum()
+        .reset_index()
+    )
+
+    fig_compare = px.bar(
+        age_compare_df,
+        x='Age',
+        y='Reach',
+        color='campaign ID',
+        barmode='group',
+        title="Reach by Age Group Across Campaigns",
+        labels={'Reach': 'Reach Count', 'Age': 'Age Group', 'campaign ID': 'Campaign'}
+    )
+
+    apply_custom_layout(fig_compare, xaxis_label="Age Group", yaxis_label="Reach")
+    st.plotly_chart(fig_compare, use_container_width=True)
+
+
     
     # --- Comparative Analysis ---
     st.header("🔍 Campaign Comparative Analysis")
@@ -446,7 +628,36 @@ try:
         'Spend ($)': '${:.2f}',
         'Performance Score': '{:.4f}'
     }).background_gradient(subset=['Performance Score'], cmap='RdYlGn'))
-    
+
+   # --- Campaign Performance Visualization ---
+    st.subheader("📊 Visual Campaign Performance Comparison")
+
+    fig_perf = px.bar(
+        summary_table.sort_values('Performance Score', ascending=True),  # ascending for horizontal bars
+        x='Performance Score',
+        y='Campaign',
+        orientation='h',
+        color='Performance Score',
+        color_continuous_scale='RdYlGn',
+        title="Campaigns Ranked by Performance Score",
+        labels={'Performance Score': 'Score', 'Campaign': 'Campaign ID'},
+        text='Performance Score'
+    )
+
+    fig_perf.update_traces(
+        texttemplate='%{text:.4f}',
+        textposition='outside'
+    )
+
+    fig_perf.update_layout(
+        xaxis_title="Performance Score",
+        yaxis_title="Campaign",
+        margin=dict(l=100, r=40, t=60, b=40),
+        height=500
+    )
+    apply_custom_layout(fig_perf, xaxis_label="Performance Score", yaxis_label="Campaign ID")
+    st.plotly_chart(fig_perf, use_container_width=True)
+ 
     st.markdown("---")
     st.caption("Campaign Analysis Tool - Prioritize campaigns with higher Performance Scores")
 
