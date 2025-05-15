@@ -130,12 +130,12 @@ def additional_visualizations(filtered: pd.DataFrame):
     apply_custom_layout(fig_clicks_freq, xaxis_label="Frequency", yaxis_label="Clicks")
     st.plotly_chart(fig_clicks_freq, use_container_width=True)
 
-    fig_tree = px.treemap(
-    filtered,
-    path=['Geography', 'Audience'],
-    values='Amount Spent',
-    color='Clicks',
-    color_continuous_scale='Blues'
-    )
-    st.plotly_chart(fig_tree, use_container_width=True)
+    # fig_tree = px.treemap(
+    # filtered,
+    # path=['Geography', 'Audience'],
+    # values='Amount Spent',
+    # color='Clicks',
+    # color_continuous_scale='Blues'
+    # )
+    # st.plotly_chart(fig_tree, use_container_width=True)
 
