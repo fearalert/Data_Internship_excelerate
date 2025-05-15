@@ -14,7 +14,7 @@ def additional_visualizations(filtered: pd.DataFrame):
     ctr_data = filtered.groupby('Age')["Cost Per Click (CPC)"].mean().reset_index()
     fig_ctr_age = px.bar(ctr_data, x='Age', y='Cost Per Click (CPC)', color='Age',
                         title="CPC by Age Group", labels={'Cost Per Click (CPC)': 'CPC'})
-    apply_custom_layout(fig_ctr_age, xaxis_label="Age Group", yaxis_label="CPC (INR)")
+    apply_custom_layout(fig_ctr_age, xaxis_label="Age Group", yaxis_label="CPC ")
     st.plotly_chart(fig_ctr_age, use_container_width=True)
 
     # --- CTR by Age Group ---
@@ -29,7 +29,7 @@ def additional_visualizations(filtered: pd.DataFrame):
     st.subheader("CPC vs CPR")
     fig_cpc_cpr = px.scatter(filtered, x="Cost Per Click (CPC)", y="Cost per Result (CPR)",
                             color="Age", hover_data=["campaign ID"], title="CPC vs CPR")
-    apply_custom_layout(fig_cpc_cpr, xaxis_label="CPC (INR)", yaxis_label="CPR (INR)")
+    apply_custom_layout(fig_cpc_cpr, xaxis_label="CPC ", yaxis_label="CPR ")
     st.plotly_chart(fig_cpc_cpr, use_container_width=True)
 
     # --- Spend by Geography ---
@@ -44,7 +44,6 @@ def additional_visualizations(filtered: pd.DataFrame):
     clicks_imps = filtered.groupby("campaign ID")[["Clicks", "Impressions"]].sum().reset_index()
     fig_clicks_imps = px.bar(clicks_imps, x="campaign ID", y=["Clicks", "Impressions"],
                             title="Clicks and Impressions", barmode='group')
-    fig_clicks_imps.update_traces(texttemplate='%{y:.2f}%', textposition='top center')
     apply_custom_layout(fig_clicks_imps, xaxis_label="Campaign ID", yaxis_label="Count")
     st.plotly_chart(fig_clicks_imps, use_container_width=True)
 
@@ -63,8 +62,8 @@ def additional_visualizations(filtered: pd.DataFrame):
     spc_df['Spend per Click'] = spc_df['Amount Spent'] / spc_df['Clicks'].replace(0, pd.NA)
     spc_df = spc_df.dropna(subset=['Spend per Click'])
     fig_spend_click = px.bar(spc_df, x="campaign ID", y="Spend per Click",
-                            color="campaign ID", title="Spend per Click (INR) by Campaign")
-    apply_custom_layout(fig_spend_click, xaxis_label="Campaign ID", yaxis_label="Spend per Click (INR)")
+                            color="campaign ID", title="Spend per Click by Campaign")
+    apply_custom_layout(fig_spend_click, xaxis_label="Campaign ID", yaxis_label="Spend per Click ")
     st.plotly_chart(fig_spend_click, use_container_width=True)
 
     # --- Map: Spend by Geography (Choropleth) ---
@@ -111,7 +110,7 @@ def additional_visualizations(filtered: pd.DataFrame):
                             size='Amount Spent', color='Geography', hover_name='campaign ID',
                             title="CTR vs CPR (Bubble Size = Spend)")
     fig_top10_ctr.update_traces(texttemplate='%{x:.2f}%', textposition='outside')
-    apply_custom_layout(fig_bubble, xaxis_label="CTR (%)", yaxis_label="CPR (INR)")
+    apply_custom_layout(fig_bubble, xaxis_label="CTR (%)", yaxis_label="CPR ")
     st.plotly_chart(fig_bubble, use_container_width=True)
 
     # --- Cost per Result (CPR) by Age and Geography ---
@@ -119,7 +118,7 @@ def additional_visualizations(filtered: pd.DataFrame):
     cpr_geo_age = filtered.groupby(['Geography', 'Age'])['Cost per Result (CPR)'].mean().reset_index()
     fig_cpr_geo_age = px.bar(cpr_geo_age, x='Geography', y='Cost per Result (CPR)', color='Age',
                             barmode='group', title='CPR by Age and Geography')
-    apply_custom_layout(fig_cpr_geo_age, xaxis_label="Geography", yaxis_label="CPR (INR)")
+    apply_custom_layout(fig_cpr_geo_age, xaxis_label="Geography", yaxis_label="CPR ")
     st.plotly_chart(fig_cpr_geo_age, use_container_width=True)
 
     # --- Clicks vs Frequency ---
@@ -130,13 +129,3 @@ def additional_visualizations(filtered: pd.DataFrame):
     fig_clicks_freq.update_traces(texttemplate='%{y}', textposition='top center')
     apply_custom_layout(fig_clicks_freq, xaxis_label="Frequency", yaxis_label="Clicks")
     st.plotly_chart(fig_clicks_freq, use_container_width=True)
-
-    # fig_tree = px.treemap(
-    # filtered,
-    # path=['Geography', 'Audience'],
-    # values='Amount Spent',
-    # color='Clicks',
-    # color_continuous_scale='Blues'
-    # )
-    # st.plotly_chart(fig_tree, use_container_width=True)
-
