@@ -89,7 +89,7 @@ try:
         y='Efficiency Score',
         color='Efficiency Score',
         color_continuous_scale='RdYlGn',  # Red (bad) to Yellow to Green (good)
-        title='Campaign Efficiency Scores (CTR / CPR) - Lower is Worse',
+        title='Campaign Efficiency Scores: (CTR / CPR) - (Lower efficiency score shows low performance)',
         hover_data=['Amount Spent', 'Click-Through Rate (CTR in %)', 'Cost per Result (CPR)']
     )
 
@@ -107,7 +107,7 @@ try:
         y='ROI Score',
         color='ROI Score',
         color_continuous_scale='RdYlGn',  # Red (bad) to Yellow to Green (good)
-        title='Campaign ROI Scores (ULC / Spend) - Lower is Worse',
+        title='Campaign ROI Scores: (ULC / Spend) - (Lower ROI Score shows low performance)',
         hover_data=['Amount Spent', 'Unique Link Clicks (ULC)', 'Cost per Result (CPR)']
     )
 
@@ -127,7 +127,7 @@ try:
             y='Cost Per Click (CPC)',
             color='Cost Per Click (CPC)',
             color_continuous_scale='RdYlGn_r',  # Green (good) to Red (bad)
-            title='Cost per Click by Campaign - Higher is Worse',
+            title='Cost per Click by Campaign - (Higher CPC values Shows low performance)',
             hover_data=['Amount Spent', 'Clicks']
         )
         st.plotly_chart(fig_cpc, use_container_width=True)
@@ -140,7 +140,7 @@ try:
             y='Cost per Result (CPR)',
             color='Cost per Result (CPR)',
             color_continuous_scale='RdYlGn_r',  # Green (good) to Red (bad)
-            title='Cost per Result by Campaign - Higher is Worse',
+            title='Cost per Result by Campaign - (Higher CRC values Shows low performance)',
             hover_data=['Amount Spent', 'Unique Link Clicks (ULC)']
         )
 
