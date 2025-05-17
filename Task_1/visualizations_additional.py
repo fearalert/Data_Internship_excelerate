@@ -14,21 +14,8 @@ def additional_visualizations(filtered: pd.DataFrame):
     ctr_data = filtered.groupby('Age')["Cost Per Click (CPC)"].mean().reset_index()
     fig_ctr_age = px.bar(ctr_data, x='Age', y='Cost Per Click (CPC)', color='Age',
                         title="CPC by Age Group", labels={'Cost Per Click (CPC)': 'CPC'},
-                        text = 'CPC by Age Group')
+                        #text = 'CPC by Age Group')
     apply_custom_layout(fig_ctr_age, xaxis_label="Age Group", yaxis_label="CPC ")
-    fig_ctr_age.update_traces(
-    texttemplate='%{text:.2f}',
-    textposition='outside',
-    insidetextanchor='middle'
-    )
-
-    fig_roi.update_layout(
-    yaxis_title="CPC by Age Group",
-    xaxis_title="Age",
-    uniformtext_minsize=8,
-    uniformtext_mode='show'
-    )
-
     st.plotly_chart(fig_ctr_age, use_container_width=True)
 
     # --- CTR by Age Group ---
@@ -39,19 +26,6 @@ def additional_visualizations(filtered: pd.DataFrame):
                         text = 'CTR by Age Group';
                         )
     apply_custom_layout(fig_ctr_age, xaxis_label="Age Group", yaxis_label="CTR (%)")
-     fig_ctr_age.update_traces(
-        texttemplate='%{text:.2f}',
-        textposition='outside',
-        insidetextanchor='middle'
-    )
-
-    fig_roi.update_layout(
-        yaxis_title="CTR by Age Group",
-        xaxis_title="Age",
-        uniformtext_minsize=8,
-        uniformtext_mode='show'
-    )
-
     st.plotly_chart(fig_ctr_age, use_container_width=True)
 
     # --- CPC vs CPR Scatter ---
