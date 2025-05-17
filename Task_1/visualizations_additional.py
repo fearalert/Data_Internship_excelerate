@@ -23,7 +23,7 @@ def additional_visualizations(filtered: pd.DataFrame):
     ctr_data = filtered.groupby('Age')["Click-Through Rate (CTR in %)"].mean().reset_index()
     fig_ctr_age = px.bar(ctr_data, x='Age', y='Click-Through Rate (CTR in %)', color='Age',
                         title="CTR by Age Group", labels={'Click-Through Rate (CTR in %)': 'CTR (%)'}
-                        text = 'CTR by Age Group';
+                        #text = 'CTR by Age Group';
                         )
     apply_custom_layout(fig_ctr_age, xaxis_label="Age Group", yaxis_label="CTR (%)")
     st.plotly_chart(fig_ctr_age, use_container_width=True)
