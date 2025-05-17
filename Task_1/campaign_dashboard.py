@@ -188,7 +188,7 @@ try:
 
         # Update layout
         apply_custom_layout(fig_cpr, xaxis_label="campaign ID", yaxis_label="Cost per Result (CPR)")
-         fig_cpr.update_traces(
+        fig_cpr.update_traces(
             texttemplate='%{text:.2f}',
             textposition='outside',
             insidetextanchor='middle'
