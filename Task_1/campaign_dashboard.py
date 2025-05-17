@@ -128,17 +128,17 @@ try:
 
     # Update layout
     apply_custom_layout(fig_roi, xaxis_label="campaign ID", yaxis_label="ROI Score")
-     fig_roi.update_traces(
-    texttemplate='%{text:.2f}',
-    textposition='outside',
-    insidetextanchor='middle'
+    fig_roi.update_traces(
+        texttemplate='%{text:.2f}',
+        textposition='outside',
+        insidetextanchor='middle'
     )
 
     fig_roi.update_layout(
-    yaxis_title="ROI Score",
-    xaxis_title="Campaign ID",
-    uniformtext_minsize=8,
-    uniformtext_mode='show'
+        yaxis_title="ROI Score",
+        xaxis_title="Campaign ID",
+        uniformtext_minsize=8,
+        uniformtext_mode='show'
     )
     
     st.plotly_chart(fig_roi, use_container_width=True)
