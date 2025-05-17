@@ -98,16 +98,16 @@ try:
     apply_custom_layout(fig_efficiency, xaxis_label="campaign ID", yaxis_label="Efficiency Score")
     
     fig_efficiency.update_traces(
-    texttemplate='%{text:.2f}',
-    textposition='inside',
-    insidetextanchor='middle'
+        texttemplate='%{text:.2f}',
+        textposition='inside',
+        insidetextanchor='middle'
     )
 
     fig_efficiency.update_layout(
-    yaxis_title="Efficiency Score",
-    xaxis_title="Campaign ID",
-    uniformtext_minsize=8,
-    uniformtext_mode='show'
+        yaxis_title="Efficiency Score",
+        xaxis_title="Campaign ID",
+        uniformtext_minsize=8,
+        uniformtext_mode='show'
     )
     
     st.plotly_chart(fig_efficiency, use_container_width=True)
@@ -122,11 +122,24 @@ try:
         color='ROI Score',
         color_continuous_scale='RdYlGn',  # Red (bad) to Yellow to Green (good)
         title='Campaign ROI Scores: (ULC / Spend) - (Lower ROI Score shows low performance)',
-        hover_data=['Amount Spent', 'Unique Link Clicks (ULC)', 'Cost per Result (CPR)']
+        hover_data=['Amount Spent', 'Unique Link Clicks (ULC)', 'Cost per Result (CPR)'],
+        text='ROI Score'
     )
 
     # Update layout
     apply_custom_layout(fig_roi, xaxis_label="campaign ID", yaxis_label="ROI Score")
+     fig_roi.update_traces(
+    texttemplate='%{text:.2f}',
+    textposition='outside',
+    insidetextanchor='middle'
+    )
+
+    fig_roi.update_layout(
+    yaxis_title="ROI Score",
+    xaxis_title="Campaign ID",
+    uniformtext_minsize=8,
+    uniformtext_mode='show'
+    )
     
     st.plotly_chart(fig_roi, use_container_width=True)
     
@@ -142,9 +155,22 @@ try:
             color='Cost Per Click (CPC)',
             color_continuous_scale='RdYlGn_r',  # Green (good) to Red (bad)
             title='Cost per Click by Campaign - (Higher CPC values Shows low performance)',
-            hover_data=['Amount Spent', 'Clicks']
+            hover_data=['Amount Spent', 'Clicks'],
+            text = 'Cost Per Click (CPC)'
         )
         apply_custom_layout(fig_cpc, xaxis_label="campaign ID", yaxis_label="Cost Per Click (CPC)")
+        fig_cpc.update_traces(
+            texttemplate='%{text:.2f}',
+            textposition='outside',
+            insidetextanchor='middle'
+        )
+
+        fig_cpc.update_layout(
+            yaxis_title="Cost Per Click (CPC)",
+            xaxis_title="Campaign ID",
+            uniformtext_minsize=8,
+            uniformtext_mode='show'
+        )
         st.plotly_chart(fig_cpc, use_container_width=True)
     
     with col2:
@@ -156,12 +182,24 @@ try:
             color='Cost per Result (CPR)',
             color_continuous_scale='RdYlGn_r',  # Green (good) to Red (bad)
             title='Cost per Result by Campaign - (Higher CRC values Shows low performance)',
-            hover_data=['Amount Spent', 'Unique Link Clicks (ULC)']
+            hover_data=['Amount Spent', 'Unique Link Clicks (ULC)'],
+            text  = 'Cost Per Result (CPR)'
         )
 
         # Update layout
         apply_custom_layout(fig_cpr, xaxis_label="campaign ID", yaxis_label="Cost per Result (CPR)")
+         fig_cpr.update_traces(
+            texttemplate='%{text:.2f}',
+            textposition='outside',
+            insidetextanchor='middle'
+        )
 
+        fig_cpr.update_layout(
+            yaxis_title="Cost Per Result (CPR)",
+            xaxis_title="Campaign ID",
+            uniformtext_minsize=8,
+            uniformtext_mode='show'
+        )
         st.plotly_chart(fig_cpr, use_container_width=True)
     
     # --- Performance vs Spend Analysis ---
