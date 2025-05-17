@@ -91,10 +91,24 @@ try:
         color_continuous_scale='RdYlGn',  # Red (bad) to Yellow to Green (good)
         title='Campaign Efficiency Scores: (CTR / CPR) - (Lower efficiency score shows low performance)',
         hover_data=['Amount Spent', 'Click-Through Rate (CTR in %)', 'Cost per Result (CPR)']
+        text = 'Efficiency Score'
     )
 
     # Update layout
     apply_custom_layout(fig_efficiency, xaxis_label="campaign ID", yaxis_label="Efficiency Score")
+    
+    fig_efficiency.update_traces(
+    texttemplate='%{text:.2f}',
+    textposition='inside',
+    insidetextanchor='middle'
+    )
+
+    fig_efficiency.update_layout(
+    yaxis_title="Efficiency Score",
+    xaxis_title="Campaign ID",
+    uniformtext_minsize=8,
+    uniformtext_mode='show'
+    )
     
     st.plotly_chart(fig_efficiency, use_container_width=True)
     
