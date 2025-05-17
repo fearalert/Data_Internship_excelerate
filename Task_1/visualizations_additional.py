@@ -14,18 +14,44 @@ def additional_visualizations(filtered: pd.DataFrame):
     ctr_data = filtered.groupby('Age')["Cost Per Click (CPC)"].mean().reset_index()
     fig_ctr_age = px.bar(ctr_data, x='Age', y='Cost Per Click (CPC)', color='Age',
                         title="CPC by Age Group", labels={'Cost Per Click (CPC)': 'CPC'},
-                        #text = 'CPC by Age Group')
-    apply_custom_layout(fig_ctr_age, xaxis_label="Age Group", yaxis_label="CPC ")
+                        text= "Cost Per Click (CPC)",
+                        )
+    apply_custom_layout(fig_ctr_age, xaxis_label="Age Group", yaxis_label="CPC")
+    fig_ctr_age.update_traces(
+            texttemplate='%{text:.2f}',
+            textposition='outside',
+            insidetextanchor='middle'
+        )
+
+    fig_ctr_age.update_layout(
+            yaxis_title="Cost Per Click (CPC)",
+            xaxis_title="Age",
+            uniformtext_minsize=8,
+            uniformtext_mode='show'
+        )
+
     st.plotly_chart(fig_ctr_age, use_container_width=True)
 
     # --- CTR by Age Group ---
     st.subheader("CTR by Age Group")
     ctr_data = filtered.groupby('Age')["Click-Through Rate (CTR in %)"].mean().reset_index()
     fig_ctr_age = px.bar(ctr_data, x='Age', y='Click-Through Rate (CTR in %)', color='Age',
-                        title="CTR by Age Group", labels={'Click-Through Rate (CTR in %)': 'CTR (%)'}
-                        #text = 'CTR by Age Group';
+                        title="CTR by Age Group", labels={'Click-Through Rate (CTR in %)': 'CTR (%)'},
+                        text = 'Click-Through Rate (CTR in %)',
                         )
     apply_custom_layout(fig_ctr_age, xaxis_label="Age Group", yaxis_label="CTR (%)")
+    fig_ctr_age.update_traces(
+            texttemplate='%{text:.2f}',
+            textposition='outside',
+            insidetextanchor='middle'
+        )
+
+    fig_ctr_age.update_layout(
+            yaxis_title="Click-Through Rate (CTR in %)",
+            xaxis_title="Age",
+            uniformtext_minsize=8,
+            uniformtext_mode='show'
+        )
     st.plotly_chart(fig_ctr_age, use_container_width=True)
 
     # --- CPC vs CPR Scatter ---

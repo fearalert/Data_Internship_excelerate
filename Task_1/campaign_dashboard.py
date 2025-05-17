@@ -99,7 +99,7 @@ try:
     
     fig_efficiency.update_traces(
         texttemplate='%{text:.2f}',
-        textposition='inside',
+        textposition='outside',
         insidetextanchor='middle'
     )
 
@@ -183,7 +183,7 @@ try:
             color_continuous_scale='RdYlGn_r',  # Green (good) to Red (bad)
             title='Cost per Result by Campaign - (Higher CRC values Shows low performance)',
             hover_data=['Amount Spent', 'Unique Link Clicks (ULC)'],
-            text  = 'Cost Per Result (CPR)'
+            text  = 'Cost per Result (CPR)',
         )
 
         # Update layout
