@@ -90,7 +90,7 @@ try:
         color='Efficiency Score',
         color_continuous_scale='RdYlGn',  # Red (bad) to Yellow to Green (good)
         title='Campaign Efficiency Scores: (CTR / CPR) - (Lower efficiency score shows low performance)',
-        hover_data=['Amount Spent', 'Click-Through Rate (CTR in %)', 'Cost per Result (CPR)']
+        hover_data=['Amount Spent', 'Click-Through Rate (CTR in %)', 'Cost per Result (CPR)'],
         text = 'Efficiency Score'
     )
 
