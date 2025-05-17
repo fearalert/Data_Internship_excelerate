@@ -40,16 +40,16 @@ def additional_visualizations(filtered: pd.DataFrame):
                         )
     apply_custom_layout(fig_ctr_age, xaxis_label="Age Group", yaxis_label="CTR (%)")
      fig_ctr_age.update_traces(
-    texttemplate='%{text:.2f}',
-    textposition='outside',
-    insidetextanchor='middle'
+        texttemplate='%{text:.2f}',
+        textposition='outside',
+        insidetextanchor='middle'
     )
 
     fig_roi.update_layout(
-    yaxis_title="CTR by Age Group",
-    xaxis_title="Age",
-    uniformtext_minsize=8,
-    uniformtext_mode='show'
+        yaxis_title="CTR by Age Group",
+        xaxis_title="Age",
+        uniformtext_minsize=8,
+        uniformtext_mode='show'
     )
 
     st.plotly_chart(fig_ctr_age, use_container_width=True)
