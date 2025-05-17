@@ -130,6 +130,7 @@ try:
             title='Cost per Click by Campaign - Higher is Worse',
             hover_data=['Amount Spent', 'Clicks']
         )
+        apply_custom_layout(fig_cpc, xaxis_label="campaign ID", yaxis_label="Cost Per Click (CPC)")
         st.plotly_chart(fig_cpc, use_container_width=True)
     
     with col2:

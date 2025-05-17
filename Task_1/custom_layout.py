@@ -5,11 +5,11 @@ def apply_custom_layout(fig, xaxis_label="X Axis", yaxis_label="Y Axis"):
         title_font_family="Times New Roman",
         title_font_color="black",
         coloraxis_colorbar=dict(
-            title_font=dict(color="black", family="Courier New", size=14),
-            tickfont=dict(color="black", family="Courier New", size=12),
+            title_font=dict(color="black", family="Courier New", size=16),
+            tickfont=dict(color="black", family="Courier New", size=14),
         ),
         legend=dict(font=dict(color="black", family="Courier New"),
-                    title_font=dict(color="black", family="Courier New", size=14)),
+                    title_font=dict(color="black", family="Courier New", size=16)),
         xaxis_title=f"<b>{xaxis_label}</b>",
         yaxis_title=f"<b>{yaxis_label}</b>",
         xaxis=dict(
