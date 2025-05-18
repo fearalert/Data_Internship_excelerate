@@ -98,12 +98,6 @@ try:
     # Update layout
     apply_custom_layout(fig_efficiency, xaxis_label="campaign ID", yaxis_label="Efficiency Score")
     
-    fig_efficiency.update_traces(
-        texttemplate='%{text:.2f}',
-        textposition='outside',
-        insidetextanchor='middle'
-    )
-    
     st.plotly_chart(fig_efficiency, use_container_width=True)
     
     # --- ROI Analysis ---
@@ -122,11 +116,6 @@ try:
 
     # Update layout
     apply_custom_layout(fig_roi, xaxis_label="campaign ID", yaxis_label="ROI Score")
-    fig_roi.update_traces(
-        texttemplate='%{text:.2f}',
-        textposition='outside',
-        insidetextanchor='middle'
-    )
 
     st.plotly_chart(fig_roi, use_container_width=True)
     
@@ -146,11 +135,6 @@ try:
             text = 'Cost Per Click (CPC)'
         )
         apply_custom_layout(fig_cpc, xaxis_label="campaign ID", yaxis_label="Cost Per Click (CPC)")
-        fig_cpc.update_traces(
-            texttemplate='%{text:.2f}',
-            textposition='outside',
-            insidetextanchor='middle'
-        )
 
         st.plotly_chart(fig_cpc, use_container_width=True)
     
@@ -169,18 +153,7 @@ try:
 
         # Update layout
         apply_custom_layout(fig_cpr, xaxis_label="campaign ID", yaxis_label="Cost per Result (CPR)")
-        fig_cpr.update_traces(
-            texttemplate='%{text:.2f}',
-            textposition='outside',
-            insidetextanchor='middle'
-        )
-
-        fig_cpr.update_layout(
-            yaxis_title="Cost per Result (CPR)",
-            xaxis_title="campaign ID",
-            uniformtext_minsize=8,
-            uniformtext_mode='show'
-        )
+  
         st.plotly_chart(fig_cpr, use_container_width=True)
     
     # --- Performance vs Spend Analysis ---
@@ -198,7 +171,7 @@ try:
         title='Performance vs Cost (Bubble Size = Total Spend)',
         labels={'Click-Through Rate (CTR in %)': 'CTR (%)', 'Cost per Result (CPR)': 'CPR ($)'}
     )
-    apply_custom_layout(fig_bubble, xaxis_label="Click-Through Rate (CTR in %)", yaxis_label="Cost per Result (CPR)")
+    apply_custom_layout(fig_bubble, xaxis_label="Click-Through Rate (CTR in %)", yaxis_label="Cost per Result (CPR)", update_trace=False)
 
     # Add quadrant lines to identify high cost, low performance campaigns
     avg_ctr = campaign_efficiency['Click-Through Rate (CTR in %)'].mean()
@@ -339,7 +312,7 @@ try:
             font=dict(color="blue", size=12), bgcolor="white"
     )
 
-    apply_custom_layout(fig_line, xaxis_label="Age Group", yaxis_label="Count")
+    apply_custom_layout(fig_line, xaxis_label="Age Group", yaxis_label="Count", update_trace=False)
     st.plotly_chart(fig_line, use_container_width=True)
 
     # --- Spend Distribution by Geography ---
@@ -367,7 +340,7 @@ try:
                 labels={'Amount Spent': 'Amount ($)', 'Geography': 'Region'}
             )
 
-    apply_custom_layout(fig_geo, xaxis_label="Geography", yaxis_label="Amount Spent")
+    apply_custom_layout(fig_geo, xaxis_label="Geography", yaxis_label="Amount Spent", update_trace=False)
     st.plotly_chart(fig_geo, use_container_width=True)
 
     # --- Spend Distribution by Geography (Map) ---
@@ -408,7 +381,7 @@ try:
             labels={'Clicks': 'Number of Clicks', 'Audience': 'Audience Group'}
         )
 
-    apply_custom_layout(fig_clicks, xaxis_label="Audience Group", yaxis_label="Clicks")
+    apply_custom_layout(fig_clicks, xaxis_label="Audience Group", yaxis_label="Clicks", update_trace=False)
     st.plotly_chart(fig_clicks, use_container_width=True)
 
             
@@ -446,7 +419,7 @@ try:
             title=f'CTR by Age Group for {selected_campaign}'
         )
 
-        apply_custom_layout(fig_age_ctr, xaxis_label="Age Group", yaxis_label="CTR (%)")
+        apply_custom_layout(fig_age_ctr, xaxis_label="Age Group", yaxis_label="CTR (%)", update_trace=False)
         st.plotly_chart(fig_age_ctr, use_container_width=True)
     
     with col2:
@@ -524,7 +497,7 @@ try:
         labels={'value': 'Count', 'Age': 'Age Group', 'variable': 'Metric'}
     )
 
-    apply_custom_layout(fig_age_dist, xaxis_label="Age Group", yaxis_label="Count")
+    apply_custom_layout(fig_age_dist, xaxis_label="Age Group", yaxis_label="Count", update_trace=False)
     st.plotly_chart(fig_age_dist, use_container_width=True)
 
     st.subheader("🎯 Comparision of Age Distribution by Campaign")
@@ -547,9 +520,8 @@ try:
         labels={'Reach': 'Reach Count', 'Age': 'Age Group', 'campaign ID': 'Campaign'}
     )
 
-    apply_custom_layout(fig_compare, xaxis_label="Age Group", yaxis_label="Reach")
+    apply_custom_layout(fig_compare, xaxis_label="Age Group", yaxis_label="Reach", update_trace=False)
     st.plotly_chart(fig_compare, use_container_width=True)
-
 
     
     # --- Comparative Analysis ---
@@ -679,17 +651,6 @@ try:
         text='Performance Score'
     )
 
-    fig_perf.update_traces(
-        texttemplate='%{text:.4f}',
-        textposition='outside'
-    )
-
-    fig_perf.update_layout(
-        xaxis_title="Performance Score",
-        yaxis_title="Campaign",
-        margin=dict(l=100, r=40, t=60, b=40),
-        height=500
-    )
     apply_custom_layout(fig_perf, xaxis_label="Performance Score", yaxis_label="campaign ID")
     st.plotly_chart(fig_perf, use_container_width=True)
 
@@ -721,20 +682,20 @@ try:
         )
     )
 
-    fig_radar.update_layout(
-        polar=dict(
-            radialaxis=dict(
-                visible=True,
-                range=[0, max(scores) * 1.1]
-            ),
-        ),
-        showlegend=False,
-        title="Campaign Performance Radar Chart",
-        height=600
-    )
+    # fig_radar.update_layout(
+    #     polar=dict(
+    #         radialaxis=dict(
+    #             visible=True,
+    #             range=[0, max(scores) * 1.1]
+    #         ),
+    #     ),
+    #     showlegend=False,
+    #     title="Campaign Performance Radar Chart",
+    #     height=600
+    # )
 
     # Apply the same custom layout styling
-    apply_custom_layout(fig_radar, xaxis_label="", yaxis_label="")
+    apply_custom_layout(fig_radar, xaxis_label="", yaxis_label="", update_trace=False)
 
     # Display in Streamlit
     st.plotly_chart(fig_radar, use_container_width=True)

@@ -1,4 +1,4 @@
-def apply_custom_layout(fig, xaxis_label="X Axis", yaxis_label="Y Axis"):
+def apply_custom_layout(fig, xaxis_label="X Axis", yaxis_label="Y Axis", update_trace = True):
     # Update general layout
     fig.update_layout(
         font_family="Courier New",
@@ -27,8 +27,12 @@ def apply_custom_layout(fig, xaxis_label="X Axis", yaxis_label="Y Axis"):
     )
 
     # Update inner chart labels (trace text)
-    fig.update_traces(
-        textfont=dict(family="Courier New", color="black", size=16)
-    )
+    if update_trace:
+        fig.update_traces(
+            texttemplate='%{text:.2f}',
+            textposition='outside',
+            insidetextanchor='middle',
+            textfont=dict(family="Courier New", color="black", size=16)
+        )
 
     return fig

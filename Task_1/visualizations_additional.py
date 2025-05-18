@@ -17,18 +17,6 @@ def additional_visualizations(filtered: pd.DataFrame):
                         text= "Cost Per Click (CPC)",
                         )
     apply_custom_layout(fig_ctr_age, xaxis_label="Age Group", yaxis_label="CPC")
-    fig_ctr_age.update_traces(
-            texttemplate='%{text:.2f}',
-            textposition='outside',
-            insidetextanchor='middle'
-        )
-
-    fig_ctr_age.update_layout(
-            yaxis_title="Cost Per Click (CPC)",
-            xaxis_title="Age",
-            uniformtext_minsize=8,
-            uniformtext_mode='show'
-        )
 
     st.plotly_chart(fig_ctr_age, use_container_width=True)
 
@@ -40,25 +28,14 @@ def additional_visualizations(filtered: pd.DataFrame):
                         text = 'Click-Through Rate (CTR in %)',
                         )
     apply_custom_layout(fig_ctr_age, xaxis_label="Age Group", yaxis_label="CTR (%)")
-    fig_ctr_age.update_traces(
-            texttemplate='%{text:.2f}',
-            textposition='outside',
-            insidetextanchor='middle'
-        )
-
-    fig_ctr_age.update_layout(
-            yaxis_title="Click-Through Rate (CTR in %)",
-            xaxis_title="Age",
-            uniformtext_minsize=8,
-            uniformtext_mode='show'
-        )
+ 
     st.plotly_chart(fig_ctr_age, use_container_width=True)
 
     # --- CPC vs CPR Scatter ---
     st.subheader("CPC vs CPR")
     fig_cpc_cpr = px.scatter(filtered, x="Cost Per Click (CPC)", y="Cost per Result (CPR)",
                             color="Age", hover_data=["campaign ID"], title="CPC vs CPR")
-    apply_custom_layout(fig_cpc_cpr, xaxis_label="CPC ", yaxis_label="CPR ")
+    apply_custom_layout(fig_cpc_cpr, xaxis_label="CPC ", yaxis_label="CPR", update_trace=False)
     st.plotly_chart(fig_cpc_cpr, use_container_width=True)
 
     # --- Spend by Geography ---
@@ -70,19 +47,27 @@ def additional_visualizations(filtered: pd.DataFrame):
 
     # --- Clicks vs Impressions ---
     st.subheader("Clicks vs Impressions")
-    clicks_imps = filtered.groupby("campaign ID")[["Clicks", "Impressions"]].sum().reset_index()
-    fig_clicks_imps = px.bar(clicks_imps, x="campaign ID", y=["Clicks", "Impressions"],
-                            title="Clicks and Impressions", barmode='group')
-    apply_custom_layout(fig_clicks_imps, xaxis_label="Campaign ID", yaxis_label="Count")
+    clicks_imps = filtered.groupby("campaign ID")[["Clicks", "Impressions", "Unique Clicks", "Unique Link Clicks (ULC)"]].sum().reset_index()
+    fig_clicks_imps = px.line(clicks_imps, x="campaign ID", y=["Clicks", "Impressions", "Unique Clicks", "Unique Link Clicks (ULC)"],
+                            title="Clicks and Impressions", line_shape="linear", line_dash_sequence=["solid", "dot"],)
+    apply_custom_layout(fig_clicks_imps, xaxis_label="Campaign ID", yaxis_label="Count", update_trace=False)
     st.plotly_chart(fig_clicks_imps, use_container_width=True)
 
+
+    # --- Clicks vs Unique Clicks vs Unique Link Clicks ---
+    st.subheader("Clicks vs Unique Clicks vs Unique Link Clicks")
+    clicks_imps = filtered.groupby("campaign ID")[["Clicks", "Unique Clicks", "Unique Link Clicks (ULC)"]].sum().reset_index()
+    fig_clicks_imps = px.line(clicks_imps, x="campaign ID", y=["Clicks", "Unique Clicks", "Unique Link Clicks (ULC)"],
+                            title="Clicks and Impressions", line_shape="linear", line_dash_sequence=["solid", "dot"],)
+    apply_custom_layout(fig_clicks_imps, xaxis_label="Campaign ID", yaxis_label="Count", update_trace=False)
+    st.plotly_chart(fig_clicks_imps, use_container_width=True)
     # --- CTR vs Frequency ---
     st.subheader("CTR vs Frequency")
     fig_ctr_freq = px.scatter(filtered, x="Frequency", y="Click-Through Rate (CTR in %)",
                             color="Age", hover_data=["campaign ID"],
                             title="CTR vs Frequency")
     fig_ctr_freq.update_traces(texttemplate='%{y:.2f}%', textposition='top center')
-    apply_custom_layout(fig_ctr_freq, xaxis_label="Frequency", yaxis_label="CTR (%)")
+    apply_custom_layout(fig_ctr_freq, xaxis_label="Frequency", yaxis_label="CTR (%)", update_trace= False)
     st.plotly_chart(fig_ctr_freq, use_container_width=True)
 
     # --- Spend per Click by Campaign ---
@@ -92,7 +77,7 @@ def additional_visualizations(filtered: pd.DataFrame):
     spc_df = spc_df.dropna(subset=['Spend per Click'])
     fig_spend_click = px.bar(spc_df, x="campaign ID", y="Spend per Click",
                             color="campaign ID", title="Spend per Click by Campaign")
-    apply_custom_layout(fig_spend_click, xaxis_label="Campaign ID", yaxis_label="Spend per Click ")
+    apply_custom_layout(fig_spend_click, xaxis_label="Campaign ID", yaxis_label="Spend per Click", update_trace= False)
     st.plotly_chart(fig_spend_click, use_container_width=True)
 
     # --- Map: Spend by Geography (Choropleth) ---
@@ -123,14 +108,14 @@ def additional_visualizations(filtered: pd.DataFrame):
     top_ctr = filtered.groupby('campaign ID')['Click-Through Rate (CTR in %)'].mean().nlargest(10).reset_index()
     fig_top10_ctr = px.bar(top_ctr, x='Click-Through Rate (CTR in %)', y='campaign ID', orientation='h',
                         title='Top 10 Campaigns by Average CTR', color='Click-Through Rate (CTR in %)')
-    apply_custom_layout(fig_top10_ctr, xaxis_label="CTR (%)", yaxis_label="Campaign ID")
+    apply_custom_layout(fig_top10_ctr, xaxis_label="CTR (%)", yaxis_label="Campaign ID", update_trace=False)
     st.plotly_chart(fig_top10_ctr, use_container_width=True)
 
     # --- Impressions by Age Group ---
     st.subheader("📊 Impressions by Age Group")
     imp_age = filtered.groupby('Age')['Impressions'].sum().reset_index()
     fig_imp_age = px.pie(imp_age, names='Age', values='Impressions', title='Impressions Distribution by Age Group')
-    apply_custom_layout(fig_imp_age, xaxis_label="Age Group", yaxis_label="Impressions")
+    apply_custom_layout(fig_imp_age, xaxis_label="Age Group", yaxis_label="Impressions", update_trace= False)
     st.plotly_chart(fig_imp_age, use_container_width=True)
 
     # --- Bubble Chart: CPR vs CTR with Spend as Size ---
@@ -139,7 +124,7 @@ def additional_visualizations(filtered: pd.DataFrame):
                             size='Amount Spent', color='Geography', hover_name='campaign ID',
                             title="CTR vs CPR (Bubble Size = Spend)")
     fig_top10_ctr.update_traces(texttemplate='%{x:.2f}%', textposition='outside')
-    apply_custom_layout(fig_bubble, xaxis_label="CTR (%)", yaxis_label="CPR ")
+    apply_custom_layout(fig_bubble, xaxis_label="CTR (%)", yaxis_label="CPR ", update_trace=False)
     st.plotly_chart(fig_bubble, use_container_width=True)
 
     # --- Cost per Result (CPR) by Age and Geography ---
@@ -147,7 +132,7 @@ def additional_visualizations(filtered: pd.DataFrame):
     cpr_geo_age = filtered.groupby(['Geography', 'Age'])['Cost per Result (CPR)'].mean().reset_index()
     fig_cpr_geo_age = px.bar(cpr_geo_age, x='Geography', y='Cost per Result (CPR)', color='Age',
                             barmode='group', title='CPR by Age and Geography')
-    apply_custom_layout(fig_cpr_geo_age, xaxis_label="Geography", yaxis_label="CPR ")
+    apply_custom_layout(fig_cpr_geo_age, xaxis_label="Geography", yaxis_label="CPR ", update_trace=False)
     st.plotly_chart(fig_cpr_geo_age, use_container_width=True)
 
     # --- Clicks vs Frequency ---
@@ -156,5 +141,5 @@ def additional_visualizations(filtered: pd.DataFrame):
                                 color='Age', hover_name='campaign ID',
                                 title='Clicks vs Frequency')
     fig_clicks_freq.update_traces(texttemplate='%{y}', textposition='top center')
-    apply_custom_layout(fig_clicks_freq, xaxis_label="Frequency", yaxis_label="Clicks")
+    apply_custom_layout(fig_clicks_freq, xaxis_label="Frequency", yaxis_label="Clicks", update_trace=False)
     st.plotly_chart(fig_clicks_freq, use_container_width=True)
