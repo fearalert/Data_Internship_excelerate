@@ -105,7 +105,7 @@ try:
 
     fig_efficiency.update_layout(
         yaxis_title="Efficiency Score",
-        xaxis_title="Campaign ID",
+        xaxis_title="campaign ID",
         uniformtext_minsize=8,
         uniformtext_mode='show'
     )
@@ -136,7 +136,7 @@ try:
 
     fig_roi.update_layout(
         yaxis_title="ROI Score",
-        xaxis_title="Campaign ID",
+        xaxis_title="campaign ID",
         uniformtext_minsize=8,
         uniformtext_mode='show'
     )
@@ -167,7 +167,7 @@ try:
 
         fig_cpc.update_layout(
             yaxis_title="Cost Per Click (CPC)",
-            xaxis_title="Campaign ID",
+            xaxis_title="campaign ID",
             uniformtext_minsize=8,
             uniformtext_mode='show'
         )
@@ -195,8 +195,8 @@ try:
         )
 
         fig_cpr.update_layout(
-            yaxis_title="Cost Per Result (CPR)",
-            xaxis_title="Campaign ID",
+            yaxis_title="Cost per Result (CPR)",
+            xaxis_title="campaign ID",
             uniformtext_minsize=8,
             uniformtext_mode='show'
         )
@@ -336,7 +336,7 @@ try:
             x='Age',
             y=['Reach', 'Impressions'],
             markers=True,
-            title=f"Reach and Impressions by Age Group for Campaign ID:  {selected_line_campaign}",
+            title=f"Reach and Impressions by Age Group for campaign ID:  {selected_line_campaign}",
             labels={'value': 'Count', 'Age': 'Age Group', 'variable': 'Metric'}
         )
 
@@ -694,7 +694,7 @@ try:
         color='Performance Score',
         color_continuous_scale='RdYlGn',
         title="Campaigns Ranked by Performance Score",
-        labels={'Performance Score': 'Score', 'Campaign': 'Campaign ID'},
+        labels={'Performance Score': 'Score', 'Campaign': 'campaign ID'},
         text='Performance Score'
     )
 
@@ -709,7 +709,7 @@ try:
         margin=dict(l=100, r=40, t=60, b=40),
         height=500
     )
-    apply_custom_layout(fig_perf, xaxis_label="Performance Score", yaxis_label="Campaign ID")
+    apply_custom_layout(fig_perf, xaxis_label="Performance Score", yaxis_label="campaign ID")
     st.plotly_chart(fig_perf, use_container_width=True)
 
     # Basic_additional_visuals
