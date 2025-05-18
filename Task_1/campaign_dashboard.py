@@ -102,13 +102,6 @@ try:
         textposition='outside',
         insidetextanchor='middle'
     )
-
-    fig_efficiency.update_layout(
-        yaxis_title="Efficiency Score",
-        xaxis_title="campaign ID",
-        uniformtext_minsize=8,
-        uniformtext_mode='show'
-    )
     
     st.plotly_chart(fig_efficiency, use_container_width=True)
     
@@ -134,13 +127,6 @@ try:
         insidetextanchor='middle'
     )
 
-    fig_roi.update_layout(
-        yaxis_title="ROI Score",
-        xaxis_title="campaign ID",
-        uniformtext_minsize=8,
-        uniformtext_mode='show'
-    )
-    
     st.plotly_chart(fig_roi, use_container_width=True)
     
     # --- Cost Analysis ---
@@ -165,12 +151,6 @@ try:
             insidetextanchor='middle'
         )
 
-        fig_cpc.update_layout(
-            yaxis_title="Cost Per Click (CPC)",
-            xaxis_title="campaign ID",
-            uniformtext_minsize=8,
-            uniformtext_mode='show'
-        )
         st.plotly_chart(fig_cpc, use_container_width=True)
     
     with col2:
