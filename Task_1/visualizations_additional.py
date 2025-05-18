@@ -115,7 +115,7 @@ def additional_visualizations(filtered: pd.DataFrame):
                             color_continuous_scale=px.colors.sequential.Plasma,
                             title="Amount Spent by Geography (Map)")
     fig_geo_map.update_geos(projection_type="natural earth")
-    apply_custom_layout(fig_geo_map, xaxis_label="Geography", yaxis_label="Amount Spent")
+    # apply_custom_layout(fig_geo_map, xaxis_label="Geography", yaxis_label="Amount Spent")
     st.plotly_chart(fig_geo_map, use_container_width=True)
 
     # --- Top 10 Campaigns by CTR ---

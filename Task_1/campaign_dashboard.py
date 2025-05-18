@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 from visualizations_additional import additional_visualizations
 from load_data import load_data
@@ -354,7 +355,7 @@ try:
                 title="Spend Distribution Across Geographies",
                 hole=0.4
             )
-            fig_geo.update_traces(textposition='inside', textinfo='percent+label')
+            # fig_geo.update_traces(textposition='inside', textinfo='percent+label')
     else:
             fig_geo = px.bar(
                 spend_geo,
@@ -388,7 +389,7 @@ try:
     )
 
     fig_geo_map.update_geos(showframe=False, showcoastlines=False)
-    apply_custom_layout(fig_geo_map)
+    # apply_custom_layout(fig_geo_map)
     st.plotly_chart(fig_geo_map, use_container_width=True)
 
 
@@ -695,6 +696,48 @@ try:
     # Basic_additional_visuals
     st.subheader("📊 Additional Visualizations")
     st.write("Explore additional visualizations to gain deeper insights into campaign performance.")
+
+    # --- Radar Chart: Campaign Performance ---
+    st.subheader("🕸️ Radar Chart of Campaign Performance")
+
+    # Prepare radar chart data
+    categories = summary_table['Campaign'].tolist()
+    scores = summary_table['Performance Score'].tolist()
+
+    # Radar charts require the first and last point to be the same to close the loop
+    categories.append(categories[0])
+    scores.append(scores[0])
+
+    # Create radar chart
+    fig_radar = go.Figure(
+        data=go.Scatterpolar(
+            r=scores,
+            theta=categories,
+            fill='toself',
+            name='Performance Score',
+            marker=dict(color='green'),
+            text=[f'{s:.4f}' for s in scores],
+            hoverinfo='text+theta'
+        )
+    )
+
+    fig_radar.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                range=[0, max(scores) * 1.1]
+            ),
+        ),
+        showlegend=False,
+        title="Campaign Performance Radar Chart",
+        height=600
+    )
+
+    # Apply the same custom layout styling
+    apply_custom_layout(fig_radar, xaxis_label="", yaxis_label="")
+
+    # Display in Streamlit
+    st.plotly_chart(fig_radar, use_container_width=True)
     
     additional_visualizations(filtered_df)
  
