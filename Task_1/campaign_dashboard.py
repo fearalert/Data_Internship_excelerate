@@ -82,11 +82,11 @@ try:
         """, unsafe_allow_html=True)
 
     with col4:
-        avg_reach = filtered_df['Reach'].mean()
+        avg_cpr = filtered_df['Cost per Result (CPR)'].mean()
         st.markdown(f"""
         <div style="{card_style}">
-            <h4>Average Reach</h4>
-            <h2>{avg_reach:.2f}</h2>
+            <h4>Average CPR</h4>
+            <h2>${avg_cpr:.2f}</h2>
         </div>
         """, unsafe_allow_html=True)
 
@@ -374,27 +374,27 @@ try:
     apply_custom_layout(fig_geo, xaxis_label="Geography", yaxis_label="Amount Spent", update_trace=False)
     st.plotly_chart(fig_geo, use_container_width=True)
 
-    # --- Spend Distribution by Geography (Map) ---
-    st.header("🗺️ Spend Distribution by Geography (Map View)")
+    # # --- Spend Distribution by Geography (Map) ---
+    # st.header("🗺️ Spend Distribution by Geography (Map View)")
 
-    # Aggregate spend by geography
-    spend_geo = filtered_df.groupby('Geography')['Amount Spent'].sum().reset_index()
+    # # Aggregate spend by geography
+    # spend_geo = filtered_df.groupby('Geography')['Amount Spent'].sum().reset_index()
 
-    # Choropleth map visualization
-    fig_geo_map = px.choropleth(
-        spend_geo,
-        locations='Geography',
-        locationmode='country names',
-        color='Amount Spent',
-        color_continuous_scale='Oranges',
-        title='💸 Global Spend Distribution by Country',
-        labels={'Amount Spent': 'Amount ($)', 'Geography': 'Country'},
-        hover_name='Geography'
-    )
+    # # Choropleth map visualization
+    # fig_geo_map = px.choropleth(
+    #     spend_geo,
+    #     locations='Geography',
+    #     locationmode='country names',
+    #     color='Amount Spent',
+    #     color_continuous_scale='Oranges',
+    #     title='💸 Global Spend Distribution by Country',
+    #     labels={'Amount Spent': 'Amount ($)', 'Geography': 'Country'},
+    #     hover_name='Geography'
+    # )
 
-    fig_geo_map.update_geos(showframe=False, showcoastlines=False)
-    # apply_custom_layout(fig_geo_map)
-    st.plotly_chart(fig_geo_map, use_container_width=True)
+    # fig_geo_map.update_geos(showframe=False, showcoastlines=False)
+    # # apply_custom_layout(fig_geo_map)
+    # st.plotly_chart(fig_geo_map, use_container_width=True)
 
 
     # --- Clicks by Audience ---

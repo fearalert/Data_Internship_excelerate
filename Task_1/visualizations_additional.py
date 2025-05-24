@@ -42,7 +42,7 @@ def additional_visualizations(filtered: pd.DataFrame):
     st.subheader("Amount Spent by Geography")
     geo_spent = filtered.groupby("Geography")["Amount Spent"].sum().reset_index()
     fig_geo_spend = px.bar(geo_spent, x="Geography", y="Amount Spent", title="Total Spend by Geography")
-    apply_custom_layout(fig_geo_spend, xaxis_label="Geography", yaxis_label="Amount Spent")
+    apply_custom_layout(fig_geo_spend, xaxis_label="Geography", yaxis_label="Amount Spent", update_trace= False)
     st.plotly_chart(fig_geo_spend, use_container_width=True)
 
     # --- Clicks vs Impressions ---
@@ -58,7 +58,7 @@ def additional_visualizations(filtered: pd.DataFrame):
     st.subheader("Clicks vs Unique Clicks vs Unique Link Clicks")
     clicks_imps = filtered.groupby("campaign ID")[["Clicks", "Unique Clicks", "Unique Link Clicks (ULC)"]].sum().reset_index()
     fig_clicks_imps = px.line(clicks_imps, x="campaign ID", y=["Clicks", "Unique Clicks", "Unique Link Clicks (ULC)"],
-                            title="Clicks and Impressions", line_shape="linear", line_dash_sequence=["solid", "dot"],)
+                            title="Clicks, UC and ULC", line_shape="linear", line_dash_sequence=["solid", "dot"],)
     apply_custom_layout(fig_clicks_imps, xaxis_label="Campaign ID", yaxis_label="Count", update_trace=False)
     st.plotly_chart(fig_clicks_imps, use_container_width=True)
     # --- CTR vs Frequency ---
