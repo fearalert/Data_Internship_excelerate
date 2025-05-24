@@ -42,24 +42,55 @@ try:
     
     # --- Overall KPIs ---
     st.header("📊 Overall Campaign Performance")
-    
+
+    # Define style for metric cards
+    card_style = """
+        background-color: #f5f7fa;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+        text-align: center;
+    """
+
     col1, col2, col3, col4 = st.columns(4)
+
     with col1:
         total_spent = filtered_df['Amount Spent'].sum()
-        st.metric("Total Spend", f"${total_spent:,.2f}")
-    
+        st.markdown(f"""
+        <div style="{card_style}">
+            <h4>Total Spend</h4>
+            <h2>${total_spent:,.2f}</h2>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col2:
         avg_ctr = filtered_df['Click-Through Rate (CTR in %)'].mean()
-        st.metric("Average CTR", f"{avg_ctr:.2f}%")
-    
+        st.markdown(f"""
+        <div style="{card_style}">
+            <h4>Average CTR</h4>
+            <h2>{avg_ctr:.2f}%</h2>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col3:
         avg_cpc = filtered_df['Cost Per Click (CPC)'].mean()
-        st.metric("Average CPC", f"${avg_cpc:.2f}")
-    
+        st.markdown(f"""
+        <div style="{card_style}">
+            <h4>Average CPC</h4>
+            <h2>${avg_cpc:.2f}</h2>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col4:
-        avg_cpm = filtered_df['CPM'].mean()
-        st.metric("Average CPM", f"${avg_cpm:.2f}")
-        
+        avg_reach = filtered_df['Reach'].mean()
+        st.markdown(f"""
+        <div style="{card_style}">
+            <h4>Average Reach</h4>
+            <h2>{avg_reach:.2f}</h2>
+        </div>
+        """, unsafe_allow_html=True)
+
+
     # --- Campaign Performance Analysis ---
     st.header("🔍 Campaign Performance Analysis")
     
